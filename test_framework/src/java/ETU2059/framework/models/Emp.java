@@ -5,6 +5,7 @@
 package ETU2059.framework.models;
 
 import ETU2059.framework.annotation.Url;
+import ETU2059.framework.ModelView;
 
 /**
  *
@@ -13,12 +14,8 @@ import ETU2059.framework.annotation.Url;
 public class Emp {
     
     @Url(name = "Emp-test")
-    public void test(){
-        System.out.println("fonction test");
-    }
-    
-    @Url(name = "Emp-ajouter")
-    public void ajouter(){
-        System.out.println("ajouter emp");
+    public void voir(){
+        ModelView modelv = new ModelView();
+        modelv.setViewname("voir.jsp");
     }
 }

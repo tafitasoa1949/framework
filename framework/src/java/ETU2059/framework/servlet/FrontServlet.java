@@ -5,7 +5,7 @@
 package ETU2059.framework.servlet;
 
 import ETU2059.framework.Mapping;
-import ETU2059.framework.models.MethodAnnotation;
+import ETU2059.framework.annotation.MethodAnnotation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
