@@ -3,9 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package ETU2059.framework;
-
-import java.lang.reflect.Method;
-
 /**
  *
  * @author Tafitasoa-P15B-140

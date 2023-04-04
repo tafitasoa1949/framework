@@ -4,7 +4,6 @@
  */
 package ETU2059.framework.annotation;
 
-import ETU2059.framework.annotation.Url;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Vector;

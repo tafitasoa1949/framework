@@ -1,6 +1,6 @@
 <%-- 
-    Document   : voir
-    Created on : 30 mars 2023, 18:12:40
+    Document   : index
+    Created on : 4 avr. 2023, 10:55:30
     Author     : Tafitasoa-P15B-140
 --%>
 
@@ -13,6 +13,8 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <p>Voir page</p>
+        <a href="deptlist">list dept</a>
+        <br>
+        <a href="ajouter">Ajouter emp</a>
     </body>
 </html>
