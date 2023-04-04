@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ETU2059.framework.models;
+package ETU2059.framework.annotation;
 
-import ETU2059.framework.annotation.Url;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Vector;

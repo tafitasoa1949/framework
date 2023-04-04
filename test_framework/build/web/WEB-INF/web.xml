@@ -5,11 +5,10 @@
         <servlet-class>ETU2059.framework.servlet.FrontServlet</servlet-class>
     </servlet>
     
+    
     <servlet-mapping>
         <servlet-name>FrontServlet</servlet-name>
-        <url-pattern>/FrontServlet</url-pattern>
-        <url-pattern>/Test1</url-pattern>
-        <url-pattern>/Test2</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
 </web-app>

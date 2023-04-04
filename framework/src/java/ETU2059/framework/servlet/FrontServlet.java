@@ -5,15 +5,18 @@
 package ETU2059.framework.servlet;
 
 import ETU2059.framework.Mapping;
-import ETU2059.framework.models.MethodAnnotation;
+import ETU2059.framework.ModelView;
+import ETU2059.framework.annotation.MethodAnnotation;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,13 +41,14 @@ public class FrontServlet extends HttpServlet {
      */
     HashMap<String,Mapping> mappingUrls;
     
+    @Override
     public void init()throws ServletException{
-        mappingUrls = new HashMap<String,Mapping>();
+        mappingUrls = new HashMap<>();
         String path = "ETU2059/framework/models";
         try {
             Vector<MethodAnnotation> list = MethodAnnotation.getAnnotedMethods(path);
             for(MethodAnnotation me : list){
-                Mapping map_indice = new Mapping(me.getMethod().getDeclaringClass().getSimpleName(), me.getMethod().getName());
+                Mapping map_indice = new Mapping(me.getMethod().getDeclaringClass().getName(), me.getMethod().getName());
                 mappingUrls.put(me.getAnnotation().name(), map_indice);
             }
         } catch (Exception ex) {
@@ -53,10 +57,10 @@ public class FrontServlet extends HttpServlet {
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException,Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("Servlet : FrontServlet");
+        /*out.println("Servlet : FrontServlet");
         out.println("<br>");
         out.println("Context Path :"+request.getContextPath());
         out.println("<br>");
@@ -71,7 +75,7 @@ public class FrontServlet extends HttpServlet {
                 out.println(element+" "+(i+1)+" : "+elementValues[i]);
             }
         }
-        //
+        
         out.print("<br>");
         out.println("Tous les HashMap");
         out.print("<br>");
@@ -80,6 +84,27 @@ public class FrontServlet extends HttpServlet {
             out.print("<br>");
             out.println("Url :  "+entry.getKey() + " ,  Class :" +entry.getValue().getClassName() + " , Method : " + entry.getValue().getMethod());
             
+        }*/
+
+        try{
+            String uri = request.getRequestURI();
+            String url = uri.split("/")[uri.split("/").length-1];
+            if(mappingUrls.containsKey(url)){
+                Mapping map = mappingUrls.get(url);
+                Class classe = Class.forName(map.getClassName());
+                Object instance = classe.getConstructor().newInstance();
+                Method meth = classe.getMethod(map.getMethod());
+                Object obj = meth.invoke(instance);
+                if(obj.getClass() == ModelView.class){
+                    ModelView mv = (ModelView) obj;
+                    RequestDispatcher dispat = request.getRequestDispatcher(mv.getViewname());
+                    dispat.forward(request,response);
+                }else{
+                    throw new Exception("erreur eto");
+                }
+            }
+        }catch (Exception e){
+            out.print(e.getMessage());
         }
     }
 
@@ -95,7 +120,11 @@ public class FrontServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -109,7 +138,11 @@ public class FrontServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
