@@ -14,7 +14,9 @@
         <title>JSP Page</title>
     </head>
     <body>
+        
         <h1>List departement!</h1>
+        <hr>
         <% for(int i=0 ; i < v.size() ; i++) { %>
             <% out.println(v.get(i).getId()); %>
             <% out.println(v.get(i).getNom()); %>
