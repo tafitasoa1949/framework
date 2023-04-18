@@ -1,6 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 4 avr. 2023, 10:55:30
+    Document   : index.jsp
+    Created on : 31 mars 2023, 11:19:49
     Author     : Tafitasoa-P15B-140
 --%>
 
@@ -12,9 +12,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        <a href="deptlist">list dept</a>
-        <br>
-        <a href="ajouter">Ajouter emp</a>
+        <div>
+            framework
+        </div>
     </body>
 </html>
