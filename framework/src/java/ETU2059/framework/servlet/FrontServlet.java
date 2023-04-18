@@ -40,11 +40,12 @@ public class FrontServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     HashMap<String,Mapping> mappingUrls;
-    
+    String test;
     @Override
     public void init()throws ServletException{
         mappingUrls = new HashMap<>();
-        String path = "ETU2059/framework/models";
+        String path = this.getInitParameter("mode");
+        
         try {
             Vector<MethodAnnotation> list = MethodAnnotation.getAnnotedMethods(path);
             for(MethodAnnotation me : list){
@@ -97,6 +98,9 @@ public class FrontServlet extends HttpServlet {
                 Object obj = meth.invoke(instance);
                 if(obj.getClass() == ModelView.class){
                     ModelView mv = (ModelView) obj;
+                    for(Map.Entry<String,Object> entry : mv.getDonnees().entrySet()){
+                        request.setAttribute(entry.getKey(), entry.getValue());
+                    }
                     RequestDispatcher dispat = request.getRequestDispatcher(mv.getViewname());
                     dispat.forward(request,response);
                 }else{

@@ -3,7 +3,9 @@
     Created on : 4 avr. 2023, 10:39:32
     Author     : Tafitasoa-P15B-140
 --%>
-
+<%@page import="java.util.Vector"%>
+<%@page import="ETU2059.framework.models.Dept" %>
+<% Vector<Dept> v = (Vector<Dept>) request.getAttribute("de"); %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,5 +15,9 @@
     </head>
     <body>
         <h1>List departement!</h1>
+        <% for(int i=0 ; i < v.size() ; i++) { %>
+            <% out.println(v.get(i).getId()); %>
+            <% out.println(v.get(i).getNom()); %>
+        <% } %>
     </body>
 </html>
