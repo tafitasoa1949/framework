@@ -14,7 +14,5 @@
     <body>
         <h1>Hello World!</h1>
         <a href="deptlist">list dept</a>
-        <br>
-        <a href="ajouter">Ajouter emp</a>
     </body>
 </html>

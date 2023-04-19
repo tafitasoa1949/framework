@@ -6,6 +6,7 @@ package ETU2059.framework.models;
 
 import ETU2059.framework.ModelView;
 import ETU2059.framework.annotation.Url;
+import java.util.Vector;
 
 /**
  *
@@ -43,6 +44,12 @@ public class Dept {
     @Url(name = "deptlist")
     public ModelView list(){
         ModelView modelv = new ModelView();
+        Dept dep1 = new Dept(1,"huhu");
+        Dept dep2 = new Dept(2,"mety");
+        Vector<Dept> alldept = new Vector<Dept>();
+        alldept.add(dep1);
+        alldept.add(dep2);
+        modelv.addItem("de", alldept);
         modelv.setViewname("listdept.jsp");
         return modelv;
     }

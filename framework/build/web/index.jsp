@@ -13,7 +13,7 @@
     </head>
     <body>
         <div>
-            framework
+            <a href="FrontServlet">framework</a>
         </div>
     </body>
 </html>
