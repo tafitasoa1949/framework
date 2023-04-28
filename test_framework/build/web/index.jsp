@@ -12,7 +12,13 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Ajouter Personne</h1>
+        <form action="ajout_pers" method="get">
+            <p>Nom : <input type="text" name="nom"></p>
+            <p> Age : <input type="number" name="age"></p>
+            <p>Dtn : <input type="date" name="daty"></p>
+            <input type="submit" value="Enregistrer">
+        </form>
         <a href="deptlist">list dept</a>
     </body>
 </html>
