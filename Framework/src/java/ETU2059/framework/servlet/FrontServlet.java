@@ -7,9 +7,13 @@ package ETU2059.framework.servlet;
 import ETU2059.framework.Mapping;
 import ETU2059.framework.ModelView;
 import ETU2059.framework.annotation.MethodAnnotation;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +44,6 @@ public class FrontServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     HashMap<String,Mapping> mappingUrls;
-    String test;
     @Override
     public void init()throws ServletException{
         mappingUrls = new HashMap<>();
@@ -96,6 +99,35 @@ public class FrontServlet extends HttpServlet {
                 Object instance = classe.getConstructor().newInstance();
                 Method meth = classe.getMethod(map.getMethod());
                 Object obj = meth.invoke(instance);
+                //données view -> controlleur
+                Field[] fields = classe.getDeclaredFields();
+               
+                for(int i=0 ; i<fields.length ; i++){
+                    if(request.getParameter(fields[i].getName()) != null){
+                        
+                        String setMethodName = "set"+fields[i].getName().substring(0,1).toUpperCase()+fields[i].getName().substring(1);
+                        Class<?> fieldType = fields[i].getType();
+                        if(fieldType == Date.class){
+                            PropertyEditor editor = new CustomDateEditor();
+                            editor.setAsText(request.getParameter(fields[i].getName()));
+                            Object value = editor.getValue();
+                            classe.getMethod(setMethodName, fieldType).invoke(instance, value);
+                        }else{
+                            PropertyEditor editor = PropertyEditorManager.findEditor(fieldType);
+                            editor.setAsText(request.getParameter(fields[i].getName()));
+                            Object value = editor.getValue();
+                            classe.getMethod(setMethodName, fieldType).invoke(instance, value);
+                        }
+                    }
+                }
+                for (Field field : fields) {
+                    String getMethodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                    Method getMethod = classe.getMethod(getMethodName);
+                    Object value = getMethod.invoke(instance);
+                    out.println("Valeur de l'attribut " + field.getName() + ": " + value);
+                }
+
+                //données controlleur -> view
                 if(obj.getClass() == ModelView.class){
                     ModelView mv = (ModelView) obj;
                     for(Map.Entry<String,Object> entry : mv.getDonnees().entrySet()){
@@ -103,9 +135,8 @@ public class FrontServlet extends HttpServlet {
                     }
                     RequestDispatcher dispat = request.getRequestDispatcher(mv.getViewname());
                     dispat.forward(request,response);
-                }else{
-                    throw new Exception("erreur eto");
                 }
+                //
             }
         }catch (Exception e){
             out.print(e.getMessage());
@@ -149,14 +180,5 @@ public class FrontServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+   
 }
