@@ -13,25 +13,8 @@ import java.util.Vector;
  * @author Tafitasoa-P15B-140
  */
 public class Dept {
-    
-    int id;
     String nom;
-
-    public Dept(int id, String nom) {
-        this.id = id;
-        this.nom = nom;
-    }
-
-    public Dept() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    double salaire;
 
     public String getNom() {
         return nom;
@@ -40,17 +23,33 @@ public class Dept {
     public void setNom(String nom) {
         this.nom = nom;
     }
-   
-    @Url(name = "deptlist")
-    public ModelView list(){
-        ModelView modelv = new ModelView();
-        Dept dep1 = new Dept(1,"huhu");
-        Dept dep2 = new Dept(2,"mety");
-        Vector<Dept> alldept = new Vector<Dept>();
-        alldept.add(dep1);
-        alldept.add(dep2);
-        modelv.addItem("de", alldept);
-        modelv.setViewname("listdept.jsp");
-        return modelv;
+
+    public double getSalaire() {
+        return salaire;
+    }
+
+    public void setSalaire(double salaire) {
+        this.salaire = salaire;
+    }
+    public Dept(String no,double sal){
+        this.setNom(no);
+        this.setSalaire(sal);
+    }
+    public Dept(){
+        
+    }
+    @Url(name = "listdepartement")
+    public ModelView findAll(){
+        ModelView val = new ModelView();
+        Vector<Dept> list = new Vector<Dept>();
+        Dept d1 = new Dept("tafitasoa",3000);
+        Dept d2 = new Dept("fleuris",2000);
+        Dept d3 = new Dept("jimmy",1000);
+        list.add(d1);
+        list.add(d2);
+        list.add(d3);
+        val.addItem("li", list);
+        val.setViewname("listdept.jsp");
+        return val;
     }
 }

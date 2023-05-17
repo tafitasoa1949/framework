@@ -5,7 +5,7 @@
 --%>
 <%@page import="java.util.Vector"%>
 <%@page import="ETU2059.framework.models.Dept" %>
-<% Vector<Dept> v = (Vector<Dept>) request.getAttribute("de"); %>
+<% Vector<Dept> v = (Vector<Dept>) request.getAttribute("li"); %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,8 +18,8 @@
         <h1>List departement!</h1>
         <hr>
         <% for(int i=0 ; i < v.size() ; i++) { %>
-            <% out.println(v.get(i).getId()); %>
             <% out.println(v.get(i).getNom()); %>
+            <% out.println(v.get(i).getSalaire()); %>
         <% } %>
     </body>
 </html>
