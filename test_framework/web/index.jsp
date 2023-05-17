@@ -19,6 +19,8 @@
             <p>Dtn : <input type="date" name="daty"></p>
             <input type="submit" value="Enregistrer">
         </form>
-        <a href="deptlist">list dept</a>
+        <a href="listdepartement">List dept</a>
+        <br>
+        <a href="modifierPersonne?id=35">Ajouter personne</a>
     </body>
 </html>

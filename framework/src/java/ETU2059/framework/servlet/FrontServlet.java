@@ -13,9 +13,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -64,7 +67,7 @@ public class FrontServlet extends HttpServlet {
             throws ServletException, IOException,Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        /*out.println("Servlet : FrontServlet");
+       /* out.println("Servlet : FrontServlet");
         out.println("<br>");
         out.println("Context Path :"+request.getContextPath());
         out.println("<br>");
@@ -97,48 +100,72 @@ public class FrontServlet extends HttpServlet {
                 Mapping map = mappingUrls.get(url);
                 Class classe = Class.forName(map.getClassName());
                 Object instance = classe.getConstructor().newInstance();
-                Method meth = classe.getMethod(map.getMethod());
-                Object obj = meth.invoke(instance);
-                //données view -> controlleur
-                Field[] fields = classe.getDeclaredFields();
-               
-                for(int i=0 ; i<fields.length ; i++){
-                    if(request.getParameter(fields[i].getName()) != null){
-                        
-                        String setMethodName = "set"+fields[i].getName().substring(0,1).toUpperCase()+fields[i].getName().substring(1);
-                        Class<?> fieldType = fields[i].getType();
-                        if(fieldType == Date.class){
-                            PropertyEditor editor = new CustomDateEditor();
-                            editor.setAsText(request.getParameter(fields[i].getName()));
-                            Object value = editor.getValue();
-                            classe.getMethod(setMethodName, fieldType).invoke(instance, value);
-                        }else{
-                            PropertyEditor editor = PropertyEditorManager.findEditor(fieldType);
-                            editor.setAsText(request.getParameter(fields[i].getName()));
-                            Object value = editor.getValue();
-                            classe.getMethod(setMethodName, fieldType).invoke(instance, value);
+                Method[] all_method = classe.getMethods();
+                Method meth = null;
+                for(int j=0 ; j < all_method.length ; j++){
+                    Method meth_hafa = all_method[j];
+                    if(meth_hafa.getName().equals(map.getMethod())){
+                        meth = meth_hafa;
+                        break;
+                    }
+                    
+                }
+                
+                Parameter[] tout_parametre = meth.getParameters();
+                Enumeration<String> allrequestParameter = request.getParameterNames();
+                List<String> allrequestP = Collections.list(allrequestParameter);
+                Object[] tab_objet = new Object[tout_parametre.length];
+                for(int k=0 ; k<tout_parametre.length ; k++){
+                    for(int m=0;m<allrequestP.size() ; m++){
+                        if(tout_parametre[k].getName().equals(allrequestP.get(m))){
+                            PropertyEditor editor = PropertyEditorManager.findEditor(tout_parametre[k].getType());
+                            editor.setAsText(request.getParameter(allrequestP.get(m)));
+                            tab_objet[k] = editor.getValue();
                         }
                     }
                 }
-                for (Field field : fields) {
-                    String getMethodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-                    Method getMethod = classe.getMethod(getMethodName);
-                    Object value = getMethod.invoke(instance);
-                    out.println("Valeur de l'attribut " + field.getName() + ": " + value);
-                }
+                
+                //données view -> controlleur
+                Field[] fields = classe.getDeclaredFields();
+                    for(int i=0 ; i<fields.length ; i++){
+                        
+                        if(request.getParameter(fields[i].getName()) != null){
+                            String setMethodName = "set"+fields[i].getName().substring(0,1).toUpperCase()+fields[i].getName().substring(1);
+                            Class<?> fieldType = fields[i].getType();
 
-                //données controlleur -> view
-                if(obj.getClass() == ModelView.class){
-                    ModelView mv = (ModelView) obj;
-                    for(Map.Entry<String,Object> entry : mv.getDonnees().entrySet()){
-                        request.setAttribute(entry.getKey(), entry.getValue());
+                            if(fieldType == Date.class){
+                                PropertyEditor editor = new CustomDateEditor();
+                                editor.setAsText(request.getParameter(fields[i].getName()));
+                                Object value = editor.getValue();
+                                classe.getMethod(setMethodName, fieldType).invoke(instance, value);
+                            }else{
+                                PropertyEditor editor = PropertyEditorManager.findEditor(fieldType);
+                                editor.setAsText(request.getParameter(fields[i].getName()));
+                                Object value = editor.getValue();
+                                classe.getMethod(setMethodName, fieldType).invoke(instance, value);
+                            }
+                        }
                     }
-                    RequestDispatcher dispat = request.getRequestDispatcher(mv.getViewname());
-                    dispat.forward(request,response);
-                }
-                //
+                    for (Field field : fields) {
+                        String getMethodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                        Method getMethod = classe.getMethod(getMethodName);
+                        Object value = getMethod.invoke(instance);
+                        out.println("Valeur de l'attribut " + field.getName() + ": " + value);
+                    }
+                    //
+                    //données controlleur -> view
+                    Object obj = meth.invoke(instance,tab_objet);
+                    if(obj instanceof ModelView){
+                        ModelView mv = (ModelView) obj;
+                        for(Map.Entry<String,Object> entry : mv.getDonnees().entrySet()){
+                            request.setAttribute(entry.getKey(), entry.getValue());
+                        }
+                        RequestDispatcher dispat = request.getRequestDispatcher(mv.getViewname());
+                        dispat.forward(request,response);
+                    }  
             }
         }catch (Exception e){
+            e.printStackTrace(out);
             out.print(e.getMessage());
         }
     }
